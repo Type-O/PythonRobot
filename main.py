@@ -33,9 +33,20 @@ class Instructions(Enum):
     RIGHT = 4
 
 
+def parse_direction(dir):
+    if "NORTH" in dir:
+        return Direction.NORTH
+    elif "SOUTH" in dir:
+        return Direction.SOUTH
+    elif "EAST" in dir:
+        return Direction.EAST
+    elif "WEST" in Direction.WEST:
+        return Direction.WEST
+
+
 class InputParser:
     def __init__(self):
-        self.instructions
+        self.instructions = []
 
     def parse_input_file(self, file):
         file = open(file, 'r')
@@ -45,15 +56,16 @@ class InputParser:
 
             for part in parts:
                 if "PLACE" in part:
-                    self.instructions.append([int(Instructions.PLACE), int(parts[1]), int(parts[2]), Direction(int(parts[3]))])
+                    obj = [Instructions.PLACE, int(parts[1]), int(parts[2]), parse_direction(parts[3])]
+                    self.instructions.append(obj)
                 elif "MOVE" in part:
-                    self.instructions.append(int(Instructions.MOVE))
+                    self.instructions.append(Instructions.MOVE)
                 elif "LEFT" in part:
-                    self.instructions.append(int(Instructions.LEFT))
+                    self.instructions.append(Instructions.LEFT)
                 elif "RIGHT" in part:
-                    self.instructions.append(int(Instructions.RIGHT))
+                    self.instructions.append(Instructions.RIGHT)
                 elif "REPORT" in part:
-                    self.instructions.append(int(Instructions.REPORT))
+                    self.instructions.append(Instructions.REPORT)
 
 
 
@@ -66,7 +78,6 @@ class PythonRobot:
         self.placed = False
 
     def report(self):
-
         string = ""
 
         if not self.placed:
@@ -122,29 +133,24 @@ class PythonRobot:
         elif self.dir is Direction.EAST & check_coord(self.world_location[1]):
             self.world_location -= 1
 
+    def run_instructions(self, instruction_set):
+        if not self.placed and bool(instruction_set[0][0] is not Instructions.PLACE):
+            return
+        else:
+            for instruction in instruction_set:
+                print("Hello")
+
+
 
 def main():
     """ Main program """
     # Code goes over here.
 
     robot = PythonRobot()
-    robot.report()
-
-    robot.rotate_right()
-    robot.place(1, 1, 1)
-    robot.report()
-    robot.rotate_right()
-    robot.report()
-    robot.rotate_right()
-    robot.report()
-    robot.rotate_right()
-    robot.report()
-    robot.rotate_right()
-    robot.report()
-    robot.rotate_right()
-
     i = InputParser()
     i.parse_input_file("InstructionSetOne.txt")
+
+    robot.run_instructions(i.instructions)
 
     return 0
 
